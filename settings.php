@@ -106,4 +106,20 @@ if ($hassiteconfig) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);
 
+    $name = 'local_chatbot_dialogflow/chatbot_head_history';
+    $title = get_string('chatbot_head_history', 'local_chatbot_dialogflow');
+    $settings->add(new admin_setting_heading($name, $title, ''));
+
+    $name = 'local_chatbot_dialogflow/chatbot_history_enabled';
+    $title = get_string('chatbot_history_enabled', 'local_chatbot_dialogflow');
+    $description = get_string('chatbot_history_enabled_desc', 'local_chatbot_dialogflow');
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 0);
+    $settings->add($setting);
+
+    $name = 'local_chatbot_dialogflow/chatbot_history_expire';
+    $title = get_string('chatbot_history_expire', 'local_chatbot_dialogflow');
+    $description = get_string('chatbot_history_expire_desc', 'local_chatbot_dialogflow');
+    $setting = new admin_setting_configtext($name, $title, $description, '0', PARAM_INT);
+    $settings->add($setting);
+
 }

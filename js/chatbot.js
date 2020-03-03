@@ -1,16 +1,18 @@
 /**
  * Created by aravind on 4/28/17.
  */
+ var getUrl = window.location;
+ var url = getUrl .protocol + "//" + getUrl.host;
 
 $(function () {
 
-  var getUrl = window.location;
-  var url = getUrl .protocol + "//" + getUrl.host;
+  var objDiv = document.getElementById("scroll");
 
   $(".chat_on").click(function(){
     $(".Layout").toggle();
     $(".chat_on").hide(300);
     $('#message').focus();
+    objDiv.scrollTop = objDiv.scrollHeight;
   });
 
      $(".chat_close_icon").click(function(){
@@ -25,9 +27,8 @@ $(function () {
 			return false;
 
       $("#message").attr('readonly', true);
-		var objDiv = document.getElementById("scroll");
 
-        showUserText();
+    showUserText();
         e.preventDefault();
 
 		objDiv.scrollTop = objDiv.scrollHeight;
@@ -70,6 +71,7 @@ $(function () {
                 }
                 renderRichControls(messages, answerContainerDiv);
 
+                armazenando($(answerRow).html(), 2);
 
                 var isDisabled = $('#message').prop('disabled');
                 if(eoc){
@@ -105,77 +107,6 @@ $(function () {
 
 
 });
-
-function postAjax(query){
-    $.ajax({
-        type: 'post',
-        url: url+'/local/chatbot_dialogflow/process.php',
-        data: {submit:true, message:query},
-        success: function (response) {
-            $("#message").removeAttr("disabled");
-            $('#message').focus();
-            var responseObj = JSON.parse(response);
-            var defaultResponse = null;
-            if(responseObj.defaultResponse){
-                defaultResponse = responseObj.defaultResponse;
-            }
-            var speech = responseObj.speech;
-            var messages = responseObj.messages;
-            var eoc = responseObj.isEndOfConversation;
-
-            var answerRow = jQuery('<div/>',{
-                'class':'row'
-            });
-            var answerCol = jQuery('<div/>',{
-                'class':'col'
-            });
-            var answerContainerDiv = jQuery('<div/>',{
-                'class':"float-right",
-                tabindex:0
-            });
-
-            $('#chat-text').append(answerRow);
-            $(answerRow).append(answerCol);
-            $(answerCol).append(answerContainerDiv);
-
-
-            var textFromDefaultResponse = defaultResponse;
-            if (textFromDefaultResponse && textFromDefaultResponse.trim()!==''){
-                renderDefaultResponse(textFromDefaultResponse,answerContainerDiv);
-            }
-            renderRichControls(messages, answerContainerDiv);
-
-
-            var isDisabled = $('#message').prop('disabled');
-            if(eoc){
-                $('#message').attr("disabled","disabled");
-                $('#chat-text').append('<hr/>');
-                var divMessage = $('<div/>',{
-                    class:'d-flex justify-content-center'
-                });
-                var btnStartOver = $('<button/>',{
-                    class:'btn btn-sm btn-danger',
-                    text:'Start Over'
-                });
-                var textStartOver = $('<h3/>',{
-                    html:'End of Conversation'
-                });
-                $(divMessage).append(textStartOver);
-                $(btnStartOver).css('margin-left','10px');
-                $(divMessage).append(btnStartOver);
-                $('#chat-text').append(divMessage);
-                $(btnStartOver).click(function(){
-                    var textToSubmit = 'start over';
-                    $("#message").val(textToSubmit);
-                    $( "form#chatBotDialogflow" ).trigger( "submit" );
-                    $(divMessage).addClass('disabledbutton')
-                });
-            }
-            var objDiv = document.getElementById("chat-text");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }
-    });
-}
 
 function renderDefaultResponse(textFromDefaultResponse,parent){
     var simpleResponseRow = jQuery('<div/>',{
@@ -230,7 +161,17 @@ function renderRichControls(data, parent){
             }
         }
     }
+}
 
+function armazenando(parent, seq){
+  $.ajax({
+      type: 'post',
+      url: url+'/local/chatbot_dialogflow/api/setHistory.php',
+      data: {submit:true, message:parent, seq:seq},
+      success: function (response) {
+        // console.log(response);
+      }
+  });
 }
 
 function renderList(data,parent){
@@ -568,6 +509,8 @@ function showUserText(){
     $(userMessageRow).append(div);
     $("#chat-text" ).append(userMessageRow);
     $("#message").val('');
+
+      armazenando($(userMessageRow).html(), 1);
 }
 
 function truncateString(input, charLimit){

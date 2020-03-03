@@ -1,12 +1,19 @@
 <?php
 require_once( '../../../config.php' );
-global $CFG;
+global $CFG, $DB;
 
 $config = get_config('local_chatbot_dialogflow');
 // print_r($config);
 
+$html = '';
+
 if( $config->chatbot_enabled )
 {
+  $extra_history = '';
+  $history = $DB->get_records('chatbot_dialogflow', array('sessionid' => $_SESSION['sessionID']));
+  foreach ($history as $his) {
+    $extra_history .= '<div class="row">'.$his->text.'</div>';
+  }
   $html = '
   <link rel="stylesheet" type="text/css" href="'.$CFG->wwwroot.'/local/chatbot_dialogflow/css/chatbot.css" media="all">
   <link rel="stylesheet" type="text/css" href="'.$CFG->wwwroot.'/local/chatbot_dialogflow/css/lightslider.css" media="all">
@@ -20,7 +27,7 @@ if( $config->chatbot_enabled )
         <div class="Messenger_content">
           <div class="Messages" id="scroll">
             <div>
-              <div class="Messages_list" id="chat-text"></div>
+              <div class="Messages_list" id="chat-text">'.$extra_history.'</div>
             </div>
           </div>
           <div class="Input Input-blank">
@@ -47,6 +54,6 @@ if( $config->chatbot_enabled )
     <!--===============CHAT ON BUTTON END===============-->
   </div>
   ';
-
-  echo json_encode(array('html' => $html));
 }
+
+echo json_encode(array('html' => $html));

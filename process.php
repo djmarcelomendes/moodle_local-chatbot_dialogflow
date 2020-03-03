@@ -1,14 +1,10 @@
 <?php
 require __DIR__.'/vendor/autoload.php';
 require_once( '../../config.php' );
-global $CFG,$DB;
 
 if( empty($_SESSION['sessionID']) ){
 	$_SESSION['sessionID'] = bin2hex(random_bytes(16));
 }
-
-// $config = get_config('local_chatbot_dialogflow');
-// print_r($config);
 
 try {
     if(isset($_POST['submit'])){
@@ -94,6 +90,7 @@ try {
         $response -> speech = $transformed;
         $response -> messages = $messages;
         $response -> isEndOfConversation = $isEndOfConversation;
+
         echo json_encode($response);
         // close curl resource to free up system resources
         curl_close($ch);
