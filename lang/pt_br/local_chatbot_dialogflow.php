@@ -49,5 +49,5 @@ $string['chatbot_text_script_desc'] = 'Copie o script e cole no HTML adicional e
 $string['chatbot_head_history'] = 'Histórico de Conversas';
 $string['chatbot_history_enabled'] = 'Ativar Histórico';
 $string['chatbot_history_enabled_desc'] = 'Essa caixa de seleção permite a ativação do armazenamento das conversas.';
-$string['chatbot_history_expire'] = 'Tempo de expiração';
+$string['chatbot_history_expire'] = 'Tempo de expiração em minutos';
 $string['chatbot_history_expire_desc'] = 'Esse campo define o tempo de expiração dos dados no banco de dados. Caso especifique 0, não expira.';

@@ -49,5 +49,5 @@ $string['chatbot_text_script_desc'] = 'Script footer copy in html additional';
 $string['chatbot_head_history'] = 'History Conversation';
 $string['chatbot_history_enabled'] = 'Enable History';
 $string['chatbot_history_enabled_desc'] = 'This checkbox allows the activation of the stored history Conversation.';
-$string['chatbot_history_expire'] = 'Time expire';
+$string['chatbot_history_expire'] = 'Time expire in minutes';
 $string['chatbot_history_expire_desc'] = 'This field define the time of expire data in database. Case 0 not expire.';

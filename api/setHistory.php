@@ -7,6 +7,10 @@ $config = get_config('local_chatbot_dialogflow');
 
 try {
     if(isset($_POST['message']) && isset($_SESSION['sessionID']) && $config->chatbot_history_enabled){
+      if( $config->chatbot_history_expire > 0 ){
+        $time_tira = time()-($config->chatbot_history_expire*60);
+        $DB->delete_records_select('chatbot_dialogflow', " timecreated <= ".$time_tira);
+      }
       $record = new stdClass();
       $record->sessionid    = $_SESSION['sessionID'];
       $record->text         = $_POST['message'];
